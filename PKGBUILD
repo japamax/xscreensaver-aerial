@@ -16,7 +16,7 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd $_gitname
-  git describe --long | sed -r 's/^v//;s/([^-]*-g)/r\1/;s/-/./g'
+  git describe --tags --long | sed -r 's/^v//;s/([^-]*-g)/r\1/;s/-/./g'
 }
 
 
