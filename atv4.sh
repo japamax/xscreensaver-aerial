@@ -10,6 +10,25 @@ exit 1; }
 # path of movies
 movies=/opt/ATV4
 
+# cinnamon desktop session
+cinnamon=false
+[[ `basename $DESKTOP_SESSION` == "cinnamon" ]] && cinnamon=true
+
+# If cinnamon desktop and grand parent Id = cinnamon-settings.py Then video is running in the cinnamon screensaver demo
+cinnamonScreenSaverDemo=false
+if [[ $cinnamon == true ]]; then 
+  #GPPID is the parent of parent Id PPID
+  GPPID=`ps -o ppid= $PPID`
+  #cmdGPPID is the end of the line command
+  cmdGPPID=`ps -o cmd= $GPPID | sed 's/.*\///'` 
+  [[ $cmdGPPID == "cinnamon-settings.py" ]] && cinnamonScreenSaverDemo=true
+fi
+
+# If cinnamon desktop put the window-id parameter into XSCREENSAVER_WINDOW
+if [[ $cinnamon == true ]]; then 
+  [[ -z $XSCREENSAVER_WINDOW ]] && getopt --long window-id  -- "$@" ; XSCREENSAVER_WINDOW=$2
+fi
+
 # day and night videos
 DayArr=(b1-1.mov b1-3.mov b2-1.mov b2-2.mov b3-2.mov b3-3.mov b4-1.mov b4-2.mov
 b5-1.mov b5-2.mov b6-1.mov b6-3.mov b7-1.mov b7-2.mov b8-2.mov b8-3.mov b9-1.mov
@@ -56,7 +75,8 @@ runit() {
     useit=$(sed -n "1 p" "$use_db")
 
     # exclude the one we just picked to create the illusion that we NEVER repeat :)
-    sed -i "/$useit/d" "$use_db"
+    # don't eat if cinnamonScreenSaverDemo
+    [[ $cinnamonScreenSaverDemo == false ]] && sed -i "/$useit/d" "$use_db"
   elif [[ $howmany -ge 2 ]]; then
     # condition 2 is true
     rndpick=1
@@ -66,8 +86,17 @@ runit() {
     useit=$(sed -n "$rndpick p" "$use_db")
 
     # exclude the one we just picked to create the illusion that we NEVER repeat :)
-    sed -i "/$useit/d" "$use_db"
+    # don't eat if cinnamonScreenSaverDemo
+    [[ $cinnamonScreenSaverDemo == false ]] && sed -i "/$useit/d" "$use_db"
   fi
+}
+
+quit()
+{
+ # Kill some mpvs STOPPED ou SLEEPED
+ for job in $(jobs -p); do
+  kill -s SIGKILL $job
+ done
 }
 
 # this part taken from Kevin Cox
@@ -75,6 +104,7 @@ runit() {
 
 IFS=$'\n'
 trap : SIGTERM SIGINT SIGHUP
+trap 'quit' EXIT
 while (true) #!(keystate lshift)
 do
   runit
@@ -86,9 +116,13 @@ do
     APPLEURL="http://a1.phobos.apple.com/us/r1000/000/Features/atv/AutumnResources/videos"
     mpv --really-quiet --no-audio --fs --no-stop-screensaver --wid="$XSCREENSAVER_WINDOW" --panscan=1.0 "$APPLEURL/$useit" &
   fi
-  pid=$!
-  wait $pid
-  [ $? -gt 128 ] && { kill $pid ; exit 128; } ;
+  mpvpid=$!
+  wait $mpvpid
+  exitCodeWaitmpv=$?
+  # exit by user so exit
+  [[  $exitCodeWaitmpv -gt 128 ]] && { kill $mpvpid ; exit 128;} ;
+  # if error with mpv then exit else continue
+  [[  $exitCodeWaitmpv -lt 128 && $exitCodeWaitmpv -ne 0 ]] && { exit 0;} ;
 done
 
 # vim:set ts=2 sw=2 et:

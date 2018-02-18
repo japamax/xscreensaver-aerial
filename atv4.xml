@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<screensaver name="atv4" _label="Apple TV4 HD Aerial">
+	<xscreensaver-updater />
+	<_description>
+		An xscreensaver that randomly selects one of the Apple TV4 HD aerial movies and plays it using mpv.
+ 	</_description>
+</screensaver>
