@@ -1,4 +1,4 @@
-# xscreensaver-aerial
+# xscreensaver-aerial for Cinnamon
 An xscreensaver that randomly selects one of the Apple TV4 HD aerial movies and plays it using mpv. 
 * The day movies will play between the hours of 7 AM and 7 PM while the night movies will play thereafter.
 * No movie should repeat until all of the respective movies have cycled through once. After that, the queue will reset and continue playing in a random fashion.
@@ -60,11 +60,6 @@ for i in b10-1.mov b10-2.mov b10-3.mov b10-4.mov b1-1.mov b1-2.mov b1-3.mov b1-4
 	wget "$url/$i"
 	chmod 644 $(pwd)/$i
 done
-```
-## Optionally for NON-Cinnamon Users :
-Edit ~/.xscreensaver to add support for it to see this script. Look for the line that beings with "programs:" and simply add the following to the file:
-```
-"ATV4" atv4 \n\
 ```
 
 Now you can select it from your cinnamon screensaver settings windows like any other. Enjoy!
