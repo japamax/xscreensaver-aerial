@@ -11,10 +11,15 @@ An xscreensaver that randomly selects one of the Apple TV4 HD aerial movies and 
 
 # Installation
 ## Users of Arch Linux
-Arch Linux users may simply download the PKGBUILD from the AUR (below) and build as usual. Follow the post install instructions.
+Arch Linux users  need only clone and build this repository and add videos by installing from the AUR (below).
+
+```
+git clone https://github.com/japamax/xscreensaver-aerial.git
+cd xscreensaver-aerial
+makepkg -i
+```
 
 ## Arch Linux Packages
-* https://aur.archlinux.org/packages/xscreensaver-aerial
 * https://aur.archlinux.org/packages/xscreensaver-aerial-videos (optional to avoid bandwidth of streaming from apple)
 
 ## Users of other distros
@@ -22,15 +27,15 @@ Users of other distros can manually complete these 2 steps:
 
 1) Copy `atv4.sh` from this repo  to `/usr/lib/xscreensaver/atv4` and make it executable by running the following as the root user:
 ```
-cp atv4.sh /usr/lib/xscreensaver/atv4 && chmod +x /usr/lib/xscreensaver/atv4
+cp atv4.sh /usr/lib/xscreensaver/atv4 && chmod 755 /usr/lib/xscreensaver/atv4
 ```
 
-2) Edit ~/.xscreensaver to add support for it to see this script. Look for the line that beings with "programs:" and simply add the following to the file:
+2) Copy `atv4.xml` from this repo  to `/usr/share/xscreensaver/config` and make it readable by running the following as the root user:
 ```
-"ATV4" atv4 \n\
+cp atv4.xml /usr/share/xscreensaver/config/atv4.xml && chmod 644 /usr/share/xscreensaver/config/atv4.xml
 ```
 
-Optionally download the expected video content manually to save the bandwidth of repeatedly streaming them.
+3) Optionally download the expected video content manually to save the bandwidth of repeatedly streaming them.
 This screensaver expects them to be installed to `/opt/ATV4` which should be world-readable. You may use the following to little script to obtain the videos and save them to this location. Make sure that you have `wget` installed prior to running the script:
 ```
 #!/bin/sh
@@ -56,4 +61,10 @@ for i in b10-1.mov b10-2.mov b10-3.mov b10-4.mov b1-1.mov b1-2.mov b1-3.mov b1-4
 	chmod 644 $(pwd)/$i
 done
 ```
-Now you can select it from `xscreensaver-demo` like any other. Enjoy!
+## Optionally for NON-Cinnamon Users :
+Edit ~/.xscreensaver to add support for it to see this script. Look for the line that beings with "programs:" and simply add the following to the file:
+```
+"ATV4" atv4 \n\
+```
+
+Now you can select it from your cinnamon screensaver settings windows like any other. Enjoy!
