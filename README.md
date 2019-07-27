@@ -14,7 +14,7 @@ An xscreensaver that randomly selects one of the Apple TV4 HD aerial movies and 
 Arch Linux users  need only clone and build this repository and add videos by installing from the AUR (below).
 
 ```
-git clone https://github.com/japamax/xscreensaver-aerial.git
+git clone https://github.com/japamax/xscreensaver-aerial-cinnamon.git
 cd xscreensaver-aerial
 makepkg -i
 ```
